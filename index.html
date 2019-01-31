@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="has-background-dark">
 
 <head>
     <meta charset="UTF-8">
@@ -14,18 +14,18 @@
 
 <body>
 
-    <div class="block has-text-centered has-background-primary">
-        <h1 class="title is-1">FlyBuy</h1>
-        <h1 class="subtitle is-5">Buy Last Minute Flights at Your Price</h1>
+    <div class="block has-text-centered mt-50">
+        <img class="flybuy-icon" src="assets/images/Flybuy_1 .png">
+        <h1 class="subtitle is-5 has-text-white">Buy Last Minute Flights at Your Price</h1>
     </div>
 
-    <div class="container">
+    <div class="container paradise-background">
         <div class="block">
 
             <div class="field">
                 <div class="control">
                     <label class="label">Select Departing City</label>
-                    <div class="select is primary">
+                    <div class="select" id="origin">
                         <select>
                             <option>Minneapolis, MN</option>
                             <option>Chicago, IL</option>
@@ -50,14 +50,20 @@
             <div class="field">
                 <label class="label">Max Budget ($)</label>
                 <div class="control">
-                    <input class="input" type="text" placeholder="Enter Max Budger Here">
+                    <input class="input" type="text" id="price" placeholder="Enter Max Budger Here">
                 </div>
             </div>
 
             <div class="field">
-                <label class="label">Calendar Field Place Holder</label>
+                <label class="label">Start Date</label>
                 <div class="control">
-                    <input type="text" class="input" placeholder="Calendar will go here">
+                    <input type="text" class="input" id="fromDT" placeholder="Enter Start Date Here">
+                </div>                
+            </div>
+            <div class="field">
+                <label class="label">End Date</label>
+                <div class="control">
+                    <input type="text" class="input" id="toDT" placeholder="Enter Start Date Here">
                 </div>                
             </div>
 
@@ -66,6 +72,12 @@
                     <button class="button is-link">Submit</button>
                 </div>
             </div>
+
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="results" class="block has-background-warning">
 
         </div>
     </div>

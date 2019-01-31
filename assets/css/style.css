@@ -1,0 +1,22 @@
+.full-background{
+    background-color: black;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.flybuy-icon{
+    width: 350px;
+    height: auto;
+}
+
+.mt-50{
+    margin-top: 50px;
+}
+
+.paradise-background{
+    background-image: url('../images/paradise-background.jpg');
+    background-size: cover;
+}
+
