@@ -9,6 +9,7 @@
         integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.css">
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <title>FlyBuy</title>
 </head>
 
@@ -55,12 +56,31 @@
             </div>
 
             <div class="field">
-                <label class="label">Calendar Field Place Holder</label>
+                <label class="label">From</label>
                 <div class="control">
-                    <input type="text" class="input" placeholder="Calendar will go here">
+                    <form>
+                            <div class="sd-container">
+                             <input name="calendarselect{ContactID}" class="timeselect" type="date" id="calendar">
+                              <span class="open-button">
+                                <button type="button"> <i class="fas fa-calendar-alt" alt= "Date Picker" id="datepickericon"></i></button>
+                              </span>
+                            </div>
+                          </form>
                 </div>                
             </div>
-
+            <div class="field">
+                    <label class="label">To</label>
+                    <div class="control">
+                        <form>
+                                <div class="sd-container">
+                                 <input name="calendarselect{ContactID}" class="timeselect" type="date" id="calendar">
+                                  <span class="open-button">
+                                    <button type="button"> <i class="fas fa-calendar-alt" alt= "Date Picker" id="datepickericon"></i></button>
+                                  </span>
+                                </div>
+                              </form>
+                    </div>                
+                </div>
             <div class="field is-grouped">
                 <div class="control">
                     <button class="button is-link">Submit</button>
@@ -69,8 +89,6 @@
 
         </div>
     </div>
-
-
     <script src="https://www.gstatic.com/firebasejs/5.8.1/firebase.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
