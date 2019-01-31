@@ -22,7 +22,14 @@
 .mt-50{
     margin-top: 50px;
 }
+.label {
+ color: whitesmoke;
+}
 
+.block {
+    margin:10px;
+
+}
 .paradise-background{
     background-image: url('../images/paradise-background.jpg');
     background-size: cover;
