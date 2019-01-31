@@ -26,8 +26,8 @@
             <div class="field">
                 <div class="control">
                     <label class="label">Select Departing City</label>
-                    <div class="select" id="origin">
-                        <select>
+                    <div class="select">
+                        <select id="origin">
                             <option>Minneapolis, MN</option>
                             <option>Chicago, IL</option>
                             <option>Los Angeles, CA</option>
@@ -60,7 +60,7 @@
                 <div class="control">
                         <form>
                                 <div class="sd-container">
-                                 <input name="calendarselect{ContactID}" class="timeselect" type="date" id="calendar">
+                                 <input name="calendarselect{ContactID}" class="timeselect" type="date" id="fromDT">
                                   <span class="open-button">
                                     <button type="button"> <i class="fas fa-calendar-alt" alt= "Date Picker" id="datepickericon"></i></button>
                                   </span>
@@ -73,7 +73,7 @@
                 <div class="control">
                         <form>
                                 <div class="sd-container">
-                                 <input name="calendarselect{ContactID}" class="timeselect" type="date" id="calendar">
+                                 <input name="calendarselect{ContactID}" class="timeselect" type="date" id="toDT">
                                   <span class="open-button">
                                     <button type="button"> <i class="fas fa-calendar-alt" alt= "Date Picker" id="datepickericon"></i></button>
                                   </span>
@@ -84,7 +84,7 @@
 
             <div class="field is-grouped">
                 <div class="control">
-                    <button class="button is-link">Submit</button>
+                    <button class="button is-link" id="submit">Submit</button>
                 </div>
             </div>
 
