@@ -11,6 +11,14 @@
     height: auto;
 }
 
+.light-background {
+    background-color: whitesmoke;
+    height: 400px;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    margin-left: 50px;
+    margin-right: 50px;
+} 
 .mt-50{
     margin-top: 50px;
 }
