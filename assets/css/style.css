@@ -23,11 +23,11 @@
     margin-top: 50px;
 }
 .label {
- color: whitesmoke;
+    color: whitesmoke;
 }
 
-.block {
-    margin:10px;
+.input-container {
+    margin: 10px;
 
 }
 .paradise-background{
