@@ -118,12 +118,6 @@ function returnResults() {
 
 
     for (var i = 0; i < selectedEvents.length; i++) {
-        /* var eventButton = $("<button>");     
-        var eventLink = $("<a>");                                 
-        eventButton.text(selectedEvents[i].eventName);
-        eventLink.attr("href", selectedEvents[i].eventURL);
-        eventButton.append(eventLink);                    
-        $("#results").append(eventButton); */
 
         var eventButton = $("<button>");
         var eventLink = $("<a>");
@@ -142,20 +136,4 @@ function returnResults() {
 //script starts
 $("#submit").on("click", mainFunction);
 
-{/* <div class="container">
-    <div id="results" class="block has-background-warning mt-50">
 
-        <section class="section has-background-white">
-            <div class="container">
-                <h1 class="title">Location Results 1</h1>
-                <p>It is currently 75°F in *Location 1*</p>
-                <br>
-                <p>Here are some events going on in the area during your visit:</p>
-                <a href="#">Event 1</a>
-                <a href="#">Event 2</a>
-                <a href="#">Event 3</a>
-            </div>
-        </section>
-
-    </div>
-</div> */}
