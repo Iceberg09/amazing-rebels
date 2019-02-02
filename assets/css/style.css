@@ -12,13 +12,14 @@
 }
 
 .header {
-    border-style:solid;
-    border-width: 5px;
-    border-left-width: 0px;
-    border-right-width: 0px;
     padding:10px;
     margin-bottom: 10px;
 }
+
+hr {
+    border: 2px solid gray;
+    border-radius: 1px;
+  }
 
 .light-background {
     background-color: whitesmoke;
@@ -28,19 +29,34 @@
     margin-left: 50px;
     margin-right: 50px;
 } 
-.mt-50{
-    margin-top: 30px;
-}
-.label {
-    color: whitesmoke;
-}
 
-.input-container {
-    margin: 10px;
-
-}
 .paradise-background{
     background-image: url('../images/paradise-background.jpg');
     background-size: cover;
 }
+
+.input-container {
+    margin: 10px;
+}
+
+.footer {
+    height: 30px;
+    margin-top: 30px;
+    text-align: center;
+    background-color: #363636;
+    color: whitesmoke;
+  }
+
+  .copyright-small {
+    font-size: 12px;
+  }
+
+.mt-50 {
+    margin-top: 30px;
+}
+
+.label {
+    color: whitesmoke;
+}
+
 
