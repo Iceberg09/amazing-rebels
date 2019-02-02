@@ -18,6 +18,7 @@ var city;
 var stateCode;
 var startDateTime;
 var endDateTime;
+var selectedEvents = [];
 
 //functions
 function mainFunction () {
@@ -39,7 +40,7 @@ function inputCollection() {
     //to date
     toDT = $("#toDT").val();
     //max price
-    price = parseInt($("#price").text());
+    price = parseInt($("#price").val());
 
 };
 
@@ -72,11 +73,30 @@ function buildUrl (){
 };
 
 function filterResults(response) {
-
+    var eventCount = 0;
+    if (response._embedded.events.length > 3){
+        eventCount = 3;
+    }
+    else {
+        eventCount = response._embedded.events.length;
+    };
+    for (var i=0; i<eventCount; i++){         
+        selectedEvents.push({
+            "eventName": response._embedded.events[i].name,
+            "eventURL": response._embedded.events[i].url
+        });
+    };
 };
 
 function returnResults() {
-
+    for(var i=0; i<selectedEvents.length; i++){
+        var eventButton = $("<button>");     
+        var eventLink = $("<a>");                                 
+        eventButton.text(selectedEvents[i].eventName);
+        eventLink.attr("href", selectedEvents[i].eventURL);
+        eventButton.append(eventLink);                    
+        $("#results").append(eventButton);
+    };
 };
 
 //script starts
