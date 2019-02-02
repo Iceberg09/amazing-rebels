@@ -14,35 +14,64 @@ var origin;
 var fromDT;
 var toDT;
 var price;
-var destination;
+var city;
+var stateCode;
+var startDateTime;
+var endDateTime;
 
 //functions
 function mainFunction () {
+    //input collection
     inputCollection();
-    //get list of desitination from DB;
-    getDesitination();
-    //call Skyscannner API
-    skyAPI();
+    //input conversion
+    inputConversion();
+    //call event API
+    eventAPI();
     //return searched results
     returnResults();
 };
 
 function inputCollection() {
     //origin place
-    origin = $("#origin").text();
+    origin = $("#origin").val();
     //from date
-    fromDT = $("#fromDT").text();
+    fromDT = $("#fromDT").val();
     //to date
-    toDT = $("#toDT").text();
-    //price
+    toDT = $("#toDT").val();
+    //max price
     price = parseInt($("#price").text());
-};
-
-function getDesitination() {
 
 };
 
-function skyAPI() {
+function inputConversion() {
+    var cityState = origin.split(",");
+    city = cityState[0];
+    stateCode = cityState[1];
+    startDateTime = fromDT + "T00:00:00Z";
+    endDateTime = toDT + "T00:00:00Z"
+}
+
+function eventAPI() {
+    buildUrl();
+    var queryURL = buildUrl();
+    $.ajax({
+        url: queryURL,
+        method: "GET"
+    }).then(filterResults);
+};
+
+function buildUrl (){
+    queryURL = "https://app.ticketmaster.com/discovery/v2/events.json?";
+    queryParams = { "apikey": "RiZRkyV5YlnXPcOPAlrXwWG4IMbwx2n8",
+                    "countryCode": "US"};
+    queryParams.stateCode = stateCode;
+    queryParams.city = city;
+    queryParams.startDateTime = startDateTime;
+    queryParams.endDateTime = endDateTime;
+    return queryURL + $.param(queryParams);
+};
+
+function filterResults(response) {
 
 };
 
