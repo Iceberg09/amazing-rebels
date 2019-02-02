@@ -1,13 +1,13 @@
 //firebase configuration
-  var config = {
+var config = {
     apiKey: "AIzaSyC88nQOFV_H15tOFBeRz4ChfWvA2-DehF4",
     authDomain: "amazingrebelsproject1.firebaseapp.com",
     databaseURL: "https://amazingrebelsproject1.firebaseio.com",
     projectId: "amazingrebelsproject1",
     storageBucket: "",
     messagingSenderId: "327937749814"
-  };
-  firebase.initializeApp(config);
+};
+firebase.initializeApp(config);
 
 //global vars
 var origin;
@@ -21,16 +21,21 @@ var endDateTime;
 var selectedEvents = [];
 
 //functions
-function mainFunction () {
+function mainFunction() {
+    //Remove previous results
+    initialization();
     //input collection
     inputCollection();
     //input conversion
     inputConversion();
     //call event API
     eventAPI();
-    //return searched results
-    returnResults();
 };
+
+function initialization(){
+    selectedEvents = [];
+    $("#results").empty();
+}
 
 function inputCollection() {
     //origin place
@@ -61,10 +66,12 @@ function eventAPI() {
     }).then(filterResults);
 };
 
-function buildUrl (){
+function buildUrl() {
     queryURL = "https://app.ticketmaster.com/discovery/v2/events.json?";
-    queryParams = { "apikey": "RiZRkyV5YlnXPcOPAlrXwWG4IMbwx2n8",
-                    "countryCode": "US"};
+    queryParams = {
+        "apikey": "RiZRkyV5YlnXPcOPAlrXwWG4IMbwx2n8",
+        "countryCode": "US"
+    };
     queryParams.stateCode = stateCode;
     queryParams.city = city;
     queryParams.startDateTime = startDateTime;
@@ -74,30 +81,81 @@ function buildUrl (){
 
 function filterResults(response) {
     var eventCount = 0;
-    if (response._embedded.events.length > 3){
+    if (response._embedded.events.length > 3) {
         eventCount = 3;
     }
     else {
         eventCount = response._embedded.events.length;
     };
-    for (var i=0; i<eventCount; i++){         
+    for (var i = 0; i < eventCount; i++) {
         selectedEvents.push({
             "eventName": response._embedded.events[i].name,
             "eventURL": response._embedded.events[i].url
         });
     };
+    returnResults();
 };
 
 function returnResults() {
-    for(var i=0; i<selectedEvents.length; i++){
-        var eventButton = $("<button>");     
+
+    var section = $("<section>");
+    var divContainer = $("<div>");
+    divContainer.attr("class", "container");
+    var title = $("<h1>");
+    title.attr("class", "title");
+    title.html(city + ", " + stateCode);
+    var weatherParagraph = $("<p>");
+    weatherParagraph.html("It is currently 75°F in " + city);
+    var eventsParagraph = $("<p>");
+    eventsParagraph.html("Here are some events going on in the area during your visit:");
+    divContainer.append(title);
+    divContainer.append(weatherParagraph);
+    divContainer.append($("<br>"));
+    divContainer.append(eventsParagraph);
+    
+
+
+
+
+    for (var i = 0; i < selectedEvents.length; i++) {
+        /* var eventButton = $("<button>");     
         var eventLink = $("<a>");                                 
         eventButton.text(selectedEvents[i].eventName);
         eventLink.attr("href", selectedEvents[i].eventURL);
         eventButton.append(eventLink);                    
-        $("#results").append(eventButton);
+        $("#results").append(eventButton); */
+
+        var eventButton = $("<button>");
+        var eventLink = $("<a>");
+        eventLink.text(selectedEvents[i].eventName);
+        eventLink.attr("href", selectedEvents[i].eventURL);
+        eventLink.attr("target", "_blank");
+        eventButton.append(eventLink);
+        divContainer.append(eventButton);
+
     };
+
+    section.append(divContainer);
+    $("#results").append(section);
 };
 
 //script starts
 $("#submit").on("click", mainFunction);
+
+{/* <div class="container">
+    <div id="results" class="block has-background-warning mt-50">
+
+        <section class="section has-background-white">
+            <div class="container">
+                <h1 class="title">Location Results 1</h1>
+                <p>It is currently 75°F in *Location 1*</p>
+                <br>
+                <p>Here are some events going on in the area during your visit:</p>
+                <a href="#">Event 1</a>
+                <a href="#">Event 2</a>
+                <a href="#">Event 3</a>
+            </div>
+        </section>
+
+    </div>
+</div> */}
