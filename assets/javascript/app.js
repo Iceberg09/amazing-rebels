@@ -1,13 +1,13 @@
 //firebase configuration
-  var config = {
+var config = {
     apiKey: "AIzaSyC88nQOFV_H15tOFBeRz4ChfWvA2-DehF4",
     authDomain: "amazingrebelsproject1.firebaseapp.com",
     databaseURL: "https://amazingrebelsproject1.firebaseio.com",
     projectId: "amazingrebelsproject1",
     storageBucket: "",
     messagingSenderId: "327937749814"
-  };
-  firebase.initializeApp(config);
+};
+firebase.initializeApp(config);
 
 //global vars
 var origin;
@@ -18,18 +18,24 @@ var city;
 var stateCode;
 var startDateTime;
 var endDateTime;
+var selectedEvents = [];
 
 //functions
-function mainFunction () {
+function mainFunction() {
+    //Remove previous results
+    initialization();
     //input collection
     inputCollection();
     //input conversion
     inputConversion();
     //call event API
     eventAPI();
-    //return searched results
-    returnResults();
 };
+
+function initialization(){
+    selectedEvents = [];
+    $("#results").empty();
+}
 
 function inputCollection() {
     //origin place
@@ -39,7 +45,7 @@ function inputCollection() {
     //to date
     toDT = $("#toDT").val();
     //max price
-    price = parseInt($("#price").text());
+    price = parseInt($("#price").val());
 
 };
 
@@ -60,10 +66,12 @@ function eventAPI() {
     }).then(filterResults);
 };
 
-function buildUrl (){
+function buildUrl() {
     queryURL = "https://app.ticketmaster.com/discovery/v2/events.json?";
-    queryParams = { "apikey": "RiZRkyV5YlnXPcOPAlrXwWG4IMbwx2n8",
-                    "countryCode": "US"};
+    queryParams = {
+        "apikey": "RiZRkyV5YlnXPcOPAlrXwWG4IMbwx2n8",
+        "countryCode": "US"
+    };
     queryParams.stateCode = stateCode;
     queryParams.city = city;
     queryParams.startDateTime = startDateTime;
@@ -72,12 +80,60 @@ function buildUrl (){
 };
 
 function filterResults(response) {
-
+    var eventCount = 0;
+    if (response._embedded.events.length > 3) {
+        eventCount = 3;
+    }
+    else {
+        eventCount = response._embedded.events.length;
+    };
+    for (var i = 0; i < eventCount; i++) {
+        selectedEvents.push({
+            "eventName": response._embedded.events[i].name,
+            "eventURL": response._embedded.events[i].url
+        });
+    };
+    returnResults();
 };
 
 function returnResults() {
 
+    var section = $("<section>");
+    var divContainer = $("<div>");
+    divContainer.attr("class", "container");
+    var title = $("<h1>");
+    title.attr("class", "title");
+    title.html(city + ", " + stateCode);
+    var weatherParagraph = $("<p>");
+    weatherParagraph.html("It is currently 75°F in " + city);
+    var eventsParagraph = $("<p>");
+    eventsParagraph.html("Here are some events going on in the area during your visit:");
+    divContainer.append(title);
+    divContainer.append(weatherParagraph);
+    divContainer.append($("<br>"));
+    divContainer.append(eventsParagraph);
+    
+
+
+
+
+    for (var i = 0; i < selectedEvents.length; i++) {
+
+        var eventButton = $("<button>");
+        var eventLink = $("<a>");
+        eventLink.text(selectedEvents[i].eventName);
+        eventLink.attr("href", selectedEvents[i].eventURL);
+        eventLink.attr("target", "_blank");
+        eventButton.append(eventLink);
+        divContainer.append(eventButton);
+
+    };
+
+    section.append(divContainer);
+    $("#results").append(section);
 };
 
 //script starts
 $("#submit").on("click", mainFunction);
+
+
