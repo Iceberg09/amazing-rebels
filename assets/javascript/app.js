@@ -19,6 +19,12 @@ var stateCode;
 var startDateTime;
 var endDateTime;
 var selectedEvents = [];
+var cityCode;
+var placesArray = [];
+var selectedFlights = [];
+
+//DB refs
+var refPlaces = firebase.database().ref("Places");
 
 //functions
 function mainFunction() {
@@ -29,11 +35,12 @@ function mainFunction() {
     //input conversion
     inputConversion();
     //call event API
-    eventAPI();
+    skyAPI();
 };
 
 function initialization(){
     selectedEvents = [];
+    selectedFlights = [];
     $("#results").empty();
 }
 
@@ -55,18 +62,22 @@ function inputConversion() {
     stateCode = cityState[1];
     startDateTime = fromDT + "T00:00:00Z";
     endDateTime = toDT + "T00:00:00Z"
+    var place = $.grep(placesArray, function (n){
+        return (n.CityName === city);
+    });
+    cityCode = place[0].SkyscannerCode;
 }
 
 function eventAPI() {
-    buildUrl();
-    var queryURL = buildUrl();
+    eventUrl();
+    var queryURL = eventUrl();
     $.ajax({
         url: queryURL,
         method: "GET"
-    }).then(filterResults);
+    }).then(filterEvents);
 };
 
-function buildUrl() {
+function eventUrl() {
     queryURL = "https://app.ticketmaster.com/discovery/v2/events.json?";
     queryParams = {
         "apikey": "RiZRkyV5YlnXPcOPAlrXwWG4IMbwx2n8",
@@ -79,7 +90,7 @@ function buildUrl() {
     return queryURL + $.param(queryParams);
 };
 
-function filterResults(response) {
+function filterEvents(response) {
     var eventCount = 0;
     if (response._embedded.events.length > 3) {
         eventCount = 3;
@@ -93,10 +104,10 @@ function filterResults(response) {
             "eventURL": response._embedded.events[i].url
         });
     };
-    returnResults();
+    returnEvents();
 };
 
-function returnResults() {
+function returnEvents() {
 
     var section = $("<section>");
     var divContainer = $("<div>");
@@ -113,10 +124,6 @@ function returnResults() {
     divContainer.append($("<br>"));
     divContainer.append(eventsParagraph);
     
-
-
-
-
     for (var i = 0; i < selectedEvents.length; i++) {
 
         var eventButton = $("<button>");
@@ -133,7 +140,71 @@ function returnResults() {
     $("#results").append(section);
 };
 
+function skyAPI() {
+    skyUrl();
+    var queryURL = skyUrl();
+    $.ajax({
+        url: queryURL,
+        method: "GET"
+    }).then(filterFlights);
+};
+
+function skyUrl() {
+    queryURL = "http://partners.api.skyscanner.net/apiservices/browsequotes/v1.0/US/usd/en-US/" + cityCode + "/us/" + fromDT + "/" + toDT + "?";
+    queryParams = {
+        "apikey": "prtl6749387986743898559646983194",
+    };
+    return queryURL + $.param(queryParams);
+};
+
+function filterFlights(response) {
+    if (response.Quotes.length === 0) {
+        alert("no quote is available at this time!")
+    }
+    else {
+        for (var i=0; i<response.Quotes.length; i++) {
+            if(response.Quotes[i].MinPrice <= price){
+                var destinationCode = response.Quotes[i].OutboundLeg.DestinationId;
+                var place = $.grep(placesArray, function (n){
+                    return (n.PlaceId === destinationCode);
+                });
+                var destinationCity = place[0].CityName;
+                selectedFlights.push({
+                        "destinationCity": destinationCity,
+                        "price": response.Quotes[i].MinPrice
+                    }
+                )
+            }
+        }
+        returnFlights();
+    };
+};
+
+function returnFlights() {
+    var $section = $("<section>");
+    var $divContainer = $("<div>");
+    $divContainer.attr("class", "container");
+    
+    for (var i = 0; i < selectedFlights.length; i++) {
+        var $para = $("<p>");
+        $para.text(selectedFlights[i].destinationCity + "," + selectedFlights[i].price);
+        $divContainer.append($para);
+    };
+
+    $section.append($divContainer);
+    $("#results").append($section);
+};
 //script starts
 $("#submit").on("click", mainFunction);
+
+refPlaces.once("value", function(snapshot){
+    placesArray = snapshot.val();
+})
+
+// refPlaces.orderByChild("CityName").equalTo(city).once("value").then(function(snapshot) {
+//     var location = snapshot.val();
+//     var key = Object.keys(location)[0];
+//     cityCode = location[key].SkyscannerCode;
+// });
 
 
