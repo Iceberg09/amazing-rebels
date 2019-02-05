@@ -69,7 +69,7 @@ function eventAPI() {
 };
 
 function weatherUrl() {
-    queryURL = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + ",us&apikey=710caaee5eb7962fcebb2ea857da3696";
+    return "http://api.openweathermap.org/data/2.5/forecast?q=" + city + ",us&apikey=710caaee5eb7962fcebb2ea857da3696";
 };
 
 function weatherAPI() {
