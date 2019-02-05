@@ -68,78 +68,6 @@ function inputConversion() {
     cityCode = place[0].SkyscannerCode;
 }
 
-function eventAPI() {
-    eventUrl();
-    var queryURL = eventUrl();
-    $.ajax({
-        url: queryURL,
-        method: "GET"
-    }).then(filterEvents);
-};
-
-function eventUrl() {
-    queryURL = "https://app.ticketmaster.com/discovery/v2/events.json?";
-    queryParams = {
-        "apikey": "RiZRkyV5YlnXPcOPAlrXwWG4IMbwx2n8",
-        "countryCode": "US"
-    };
-    queryParams.stateCode = stateCode;
-    queryParams.city = city;
-    queryParams.startDateTime = startDateTime;
-    queryParams.endDateTime = endDateTime;
-    return queryURL + $.param(queryParams);
-};
-
-function filterEvents(response) {
-    var eventCount = 0;
-    if (response._embedded.events.length > 3) {
-        eventCount = 3;
-    }
-    else {
-        eventCount = response._embedded.events.length;
-    };
-    for (var i = 0; i < eventCount; i++) {
-        selectedEvents.push({
-            "eventName": response._embedded.events[i].name,
-            "eventURL": response._embedded.events[i].url
-        });
-    };
-    returnEvents();
-};
-
-function returnEvents() {
-
-    var section = $("<section>");
-    var divContainer = $("<div>");
-    divContainer.attr("class", "container");
-    var title = $("<h1>");
-    title.attr("class", "title");
-    title.html(city + ", " + stateCode);
-    var weatherParagraph = $("<p>");
-    weatherParagraph.html("It is currently 75°F in " + city);
-    var eventsParagraph = $("<p>");
-    eventsParagraph.html("Here are some events going on in the area during your visit:");
-    divContainer.append(title);
-    divContainer.append(weatherParagraph);
-    divContainer.append($("<br>"));
-    divContainer.append(eventsParagraph);
-    
-    for (var i = 0; i < selectedEvents.length; i++) {
-
-        var eventButton = $("<button>");
-        var eventLink = $("<a>");
-        eventLink.text(selectedEvents[i].eventName);
-        eventLink.attr("href", selectedEvents[i].eventURL);
-        eventLink.attr("target", "_blank");
-        eventButton.append(eventLink);
-        divContainer.append(eventButton);
-
-    };
-
-    section.append(divContainer);
-    $("#results").append(section);
-};
-
 function skyAPI() {
     skyUrl();
     var queryURL = skyUrl();
@@ -186,25 +114,83 @@ function returnFlights() {
     $divContainer.attr("class", "container");
     
     for (var i = 0; i < selectedFlights.length; i++) {
-        var $para = $("<p>");
-        $para.text(selectedFlights[i].destinationCity + "," + selectedFlights[i].price);
-        $divContainer.append($para);
+        var $button = $("<button>");
+        $button.text(selectedFlights[i].destinationCity + "," + selectedFlights[i].price);
+        $button.attr("id", "flightButton");
+        $button.css("display", "block");
+        $button.attr("value", selectedFlights[i].destinationCity);
+        $divContainer.append($button);
     };
 
     $section.append($divContainer);
     $("#results").append($section);
 };
+
+function eventFunction() {
+    var eventCity = $(this).attr("value");
+    var $thisButton = $(this);
+    console.log($thisButton);
+    var queryURL = eventUrl(eventCity);
+    $.ajax({
+        url: queryURL,
+        method: "GET"
+    }).then(filterEvents);
+};
+
+function eventUrl(eventCity) {
+    queryURL = "https://app.ticketmaster.com/discovery/v2/events.json?";
+    queryParams = {
+        "apikey": "RiZRkyV5YlnXPcOPAlrXwWG4IMbwx2n8",
+        "countryCode": "US"
+    };
+    queryParams.city = eventCity;
+    queryParams.startDateTime = startDateTime;
+    queryParams.endDateTime = endDateTime;
+    return queryURL + $.param(queryParams);
+};
+
+function filterEvents(response) {
+    var eventCount = 0;
+    if (response._embedded.events.length > 3) {
+        eventCount = 3;
+    }
+    else {
+        eventCount = response._embedded.events.length;
+    };
+    for (var i = 0; i < eventCount; i++) {
+        selectedEvents.push({
+            "eventName": response._embedded.events[i].name,
+            "eventURL": response._embedded.events[i].url
+        });
+    };
+    returnEvents();
+};
+
+function returnEvents() {
+    var section = $("<section>");
+    var divContainer = $("<div>");
+    divContainer.attr("class", "container");
+    for (var i = 0; i < selectedEvents.length; i++) {
+        var eventButton = $("<button>");
+        var eventLink = $("<a>");
+        eventLink.text(selectedEvents[i].eventName);
+        eventLink.attr("href", selectedEvents[i].eventURL);
+        eventLink.attr("target", "_blank");
+        eventButton.append(eventLink);
+        divContainer.append(eventButton);
+
+    };
+    section.append(divContainer);
+    $thisButton.append(section);
+};
+
 //script starts
 $("#submit").on("click", mainFunction);
+$(document).on("click", "#flightButton", eventFunction);
 
 refPlaces.once("value", function(snapshot){
     placesArray = snapshot.val();
 })
 
-// refPlaces.orderByChild("CityName").equalTo(city).once("value").then(function(snapshot) {
-//     var location = snapshot.val();
-//     var key = Object.keys(location)[0];
-//     cityCode = location[key].SkyscannerCode;
-// });
 
 
