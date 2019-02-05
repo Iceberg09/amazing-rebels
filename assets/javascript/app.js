@@ -30,6 +30,8 @@ function mainFunction() {
     inputConversion();
     //call event API
     eventAPI();
+    //call weather API
+    weatherAPI();
 };
 
 function initialization(){
@@ -64,6 +66,21 @@ function eventAPI() {
         url: queryURL,
         method: "GET"
     }).then(filterResults);
+};
+
+function weatherUrl() {
+    queryURL = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + ",us&apikey=710caaee5eb7962fcebb2ea857da3696";
+};
+
+function weatherAPI() {
+    weatherUrl();
+    var queryURL = weatherUrl();
+    $.ajax({
+        url: queryURL,
+        method: "GET"
+    }).then(function(response){
+        console.log(response);
+    });
 };
 
 function buildUrl() {
