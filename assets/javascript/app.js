@@ -22,6 +22,10 @@ var selectedEvents = [];
 var cityCode;
 var placesArray = [];
 var selectedFlights = [];
+var noQuoteMessage = "";
+var noEventMessage = "";
+var buttonID;
+var eventCity;
 
 //DB refs
 var refPlaces = firebase.database().ref("Places");
@@ -39,6 +43,7 @@ function mainFunction() {
 };
 
 function initialization(){
+    noQuoteMessage = "";
     selectedEvents = [];
     selectedFlights = [];
     $("#results").empty();
@@ -87,7 +92,7 @@ function skyUrl() {
 
 function filterFlights(response) {
     if (response.Quotes.length === 0) {
-        alert("no quote is available at this time!")
+        noQuoteMessage = "no quote is available at this time!";
     }
     else {
         for (var i=0; i<response.Quotes.length; i++) {
@@ -116,28 +121,36 @@ function returnFlights() {
     for (var i = 0; i < selectedFlights.length; i++) {
         var $button = $("<button>");
         $button.text(selectedFlights[i].destinationCity + "," + selectedFlights[i].price);
-        $button.attr("id", "flightButton");
+        $button.attr("class", "flightButton");
         $button.css("display", "block");
+        $button.attr("id", i);
         $button.attr("value", selectedFlights[i].destinationCity);
         $divContainer.append($button);
     };
+    if (noQuoteMessage === ""){
+        $section.append($divContainer);
+        $("#results").append($section);
+    }
+    else {
+        $("#results").text(noQuoteMessage);
+        noQuoteMessage = "";
+    }
 
-    $section.append($divContainer);
-    $("#results").append($section);
 };
 
 function eventFunction() {
-    var eventCity = $(this).attr("value");
-    var $thisButton = $(this);
-    console.log($thisButton);
-    var queryURL = eventUrl(eventCity);
+    $(".eventSection").empty();
+    selectedEvents = [];
+    eventCity = $(this).attr("value");
+    buttonID = "#" + $(this).attr("id");
+    var queryURL = eventUrl();
     $.ajax({
         url: queryURL,
         method: "GET"
     }).then(filterEvents);
 };
 
-function eventUrl(eventCity) {
+function eventUrl() {
     queryURL = "https://app.ticketmaster.com/discovery/v2/events.json?";
     queryParams = {
         "apikey": "RiZRkyV5YlnXPcOPAlrXwWG4IMbwx2n8",
@@ -151,43 +164,56 @@ function eventUrl(eventCity) {
 
 function filterEvents(response) {
     var eventCount = 0;
-    if (response._embedded.events.length > 3) {
+    if (response.page.totalElements === 0) {
+        noEventMessage = "no event is available at this time!"
+    }
+    else if (response._embedded.events.length > 3) {
         eventCount = 3;
     }
     else {
         eventCount = response._embedded.events.length;
     };
-    for (var i = 0; i < eventCount; i++) {
-        selectedEvents.push({
-            "eventName": response._embedded.events[i].name,
-            "eventURL": response._embedded.events[i].url
-        });
+    if (eventCount > 0){
+        for (var i = 0; i < eventCount; i++) {
+            selectedEvents.push({
+                "eventName": response._embedded.events[i].name,
+                "eventURL": response._embedded.events[i].url
+            });
+        };
     };
     returnEvents();
 };
 
 function returnEvents() {
+       
     var section = $("<section>");
     var divContainer = $("<div>");
+    section.attr("class", "eventSection");
     divContainer.attr("class", "container");
-    for (var i = 0; i < selectedEvents.length; i++) {
-        var eventButton = $("<button>");
-        var eventLink = $("<a>");
-        eventLink.text(selectedEvents[i].eventName);
-        eventLink.attr("href", selectedEvents[i].eventURL);
-        eventLink.attr("target", "_blank");
-        eventButton.append(eventLink);
-        divContainer.append(eventButton);
+    if (selectedEvents.length !== 0){    
+        for (var i = 0; i < selectedEvents.length; i++) {
+            var eventButton = $("<button>");
+            var eventLink = $("<a>");
+            eventLink.text(selectedEvents[i].eventName);
+            eventLink.attr("href", selectedEvents[i].eventURL);
+            eventLink.attr("target", "_blank");
+            eventButton.append(eventLink);
+            divContainer.append(eventButton);
 
-    };
+        };
+    } else {
+        divContainer.text(noEventMessage);
+        noEventMessage = "";
+    }
     section.append(divContainer);
-    $thisButton.append(section);
+    $(buttonID).append(section);
 };
 
 //script starts
 $("#submit").on("click", mainFunction);
-$(document).on("click", "#flightButton", eventFunction);
+$(document).on("click", ".flightButton", eventFunction);
 
+//loading places from firebase
 refPlaces.once("value", function(snapshot){
     placesArray = snapshot.val();
 })
