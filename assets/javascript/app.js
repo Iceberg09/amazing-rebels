@@ -110,7 +110,7 @@ function skyAPI() {
 };
 
 function skyUrl() {
-    queryURL = "http://partners.api.skyscanner.net/apiservices/browsequotes/v1.0/US/usd/en-US/" + cityCode + "/us/" + fromDT + "/" + toDT + "?";
+    queryURL = "https://partners.api.skyscanner.net/apiservices/browsequotes/v1.0/US/usd/en-US/" + cityCode + "/us/" + fromDT + "/" + toDT + "?";
     queryParams = {
         "apikey": "prtl6749387986743898559646983194",
     };
