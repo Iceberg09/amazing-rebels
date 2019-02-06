@@ -32,6 +32,7 @@ var inputValid = true;
 var refPlaces = firebase.database().ref("Places");
 
 //functions
+//main functions to call sky api
 function mainFunction() {
     //Remove previous results
     initialization();
@@ -76,7 +77,6 @@ function inputValidation() {
     var now = moment();
     now = moment(now).add(1, "days");
     now = moment(now).format("YYYY-MM-DD");
-    console.log(now);
     if (toDT < fromDT) {
         $("#results").text("Please pick correct end date!");
         inputValid = false;
@@ -169,17 +169,22 @@ function returnFlights() {
     }
 };
 
+//functions to call event api
 function eventFunction() {
     $(".eventSection").empty();
     selectedEvents = [];
     eventCity = $(this).attr("value");
     buttonID = "#" + $(this).attr("id");
+    eventAPI();
+};
+
+function eventAPI() {
     var queryURL = eventUrl();
     $.ajax({
         url: queryURL,
         method: "GET"
     }).then(filterEvents);
-};
+}
 
 function eventUrl() {
     queryURL = "https://app.ticketmaster.com/discovery/v2/events.json?";
@@ -213,6 +218,7 @@ function filterEvents(response) {
         };
     };
     returnEvents();
+    weatherAPI();
 };
 
 function returnEvents() {
@@ -239,6 +245,36 @@ function returnEvents() {
     section.append(divContainer);
     $(buttonID).append(section);
 };
+
+//functions to call weather api
+function weatherAPI() {
+    weatherUrl();
+    var queryURL = weatherUrl();
+    $.ajax({
+        url: queryURL,
+        method: "GET"
+    }).then(returnWeather);
+};
+
+function weatherUrl() {
+    queryURL = "https://api.openweathermap.org/data/2.5/weather?";
+    queryParams = {
+        "apikey": "710caaee5eb7962fcebb2ea857da3696"
+    };
+    queryParams.q = eventCity + ",us";
+    queryParams.units = "imperial";
+    return queryURL + $.param(queryParams);
+};
+
+function returnWeather() {
+    var section = $("<section>");
+    var divContainer = $("<div>");
+    section.attr("class", "weatherSection");
+    divContainer.attr("class", "container");
+    divContainer.text("Current Weather: " + response.main.temp + ", " + response.weather[0].description);
+    section.append(divContainer);
+    $(buttonID).append(section);
+};     
 
 //script starts
 $("#submit").on("click", mainFunction);
