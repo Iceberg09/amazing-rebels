@@ -266,7 +266,7 @@ function weatherUrl() {
     return queryURL + $.param(queryParams);
 };
 
-function returnWeather() {
+function returnWeather(response) {
     var section = $("<section>");
     var divContainer = $("<div>");
     section.attr("class", "weatherSection");
