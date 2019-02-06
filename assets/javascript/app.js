@@ -26,6 +26,7 @@ var noQuoteMessage = "";
 var noEventMessage = "";
 var buttonID;
 var eventCity;
+var inputValid = true;
 
 //DB refs
 var refPlaces = firebase.database().ref("Places");
@@ -36,14 +37,19 @@ function mainFunction() {
     initialization();
     //input collection
     inputCollection();
-    //input conversion
-    inputConversion();
-    //call event API
-    skyAPI();
+    //input validation
+    inputValidation();
+    if (inputValid) {
+        //input conversion
+        inputConversion();
+        //call event API
+        skyAPI();
+    };
 };
 
 function initialization(){
     noQuoteMessage = "";
+    inputValid = true;
     selectedEvents = [];
     selectedFlights = [];
     $("#results").empty();
@@ -57,8 +63,29 @@ function inputCollection() {
     //to date
     toDT = $("#toDT").val();
     //max price
-    price = parseInt($("#price").val());
+    price = $("#price").val();
 
+};
+
+function inputValidation() {
+    if (!$.isNumeric(price) || price <= 0) {
+        $("#results").text("Please put correct price!");
+        inputValid = false;
+    };
+
+    var now = moment();
+    now = moment(now).add(1, "days");
+    now = moment(now).format("YYYY-MM-DD");
+    console.log(now);
+    if (toDT < fromDT) {
+        $("#results").text("Please pick correct end date!");
+        inputValid = false;
+    };
+    
+    if (fromDT < now){
+        $("#results").text("The start date is a past date. Please pick correct start date!");
+        inputValid = false;
+    };
 };
 
 function inputConversion() {
@@ -118,14 +145,19 @@ function returnFlights() {
     var $divContainer = $("<div>");
     $divContainer.attr("class", "container");
     
-    for (var i = 0; i < selectedFlights.length; i++) {
-        var $button = $("<button>");
-        $button.text(selectedFlights[i].destinationCity + "," + selectedFlights[i].price);
-        $button.attr("class", "flightButton");
-        $button.css("display", "block");
-        $button.attr("id", i);
-        $button.attr("value", selectedFlights[i].destinationCity);
-        $divContainer.append($button);
+    if (selectedFlights.length === 0 ){
+        noQuoteMessage = "no quote is available at this time! You might want to increase the price.";
+    }
+    else {
+        for (var i = 0; i < selectedFlights.length; i++) {
+            var $button = $("<button>");
+            $button.text(selectedFlights[i].destinationCity + "," + selectedFlights[i].price);
+            $button.attr("class", "flightButton");
+            $button.css("display", "block");
+            $button.attr("id", i);
+            $button.attr("value", selectedFlights[i].destinationCity);
+            $divContainer.append($button);
+        };
     };
     if (noQuoteMessage === ""){
         $section.append($divContainer);
@@ -135,7 +167,6 @@ function returnFlights() {
         $("#results").text(noQuoteMessage);
         noQuoteMessage = "";
     }
-
 };
 
 function eventFunction() {
@@ -216,7 +247,7 @@ $(document).on("click", ".flightButton", eventFunction);
 //loading places from firebase
 refPlaces.once("value", function(snapshot){
     placesArray = snapshot.val();
-})
+});
 
 
 
